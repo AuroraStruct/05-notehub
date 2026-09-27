@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import ReactPaginateImport from 'react-paginate';
-const ReactPaginate =
-  (ReactPaginateImport as unknown as { default: typeof ReactPaginateImport })
-    .default ?? ReactPaginateImport;
 import { useDebouncedCallback } from 'use-debounce';
 import { fetchNotes } from '../../services/noteService';
 import SearchBox from '../SearchBox/SearchBox';
 import NoteList from '../NoteList/NoteList';
 import Modal from '../Modal/Modal';
 import NoteForm from '../NoteForm/NoteForm';
+import Pagination from '../Pagination/Pagination';
 import css from './App.module.css';
 
 export default function App() {
@@ -28,8 +25,8 @@ export default function App() {
     setPage(1);
   }, 500);
 
-  const handlePageChange = (selected: { selected: number }) => {
-    setPage(selected.selected + 1);
+  const handlePageChange = (selected: number) => {
+    setPage(selected + 1);
   };
 
   const totalPages = data?.totalPages ?? 0;
@@ -39,16 +36,10 @@ export default function App() {
       <header className={css.toolbar}>
         <SearchBox onSearch={handleSearch} />
         {totalPages > 1 && (
-          <ReactPaginate
+          <Pagination
             pageCount={totalPages}
-            pageRangeDisplayed={5}
-            marginPagesDisplayed={1}
+            currentPage={page}
             onPageChange={handlePageChange}
-            forcePage={page - 1}
-            containerClassName={css.pagination}
-            activeClassName={css.active}
-            nextLabel="→"
-            previousLabel="←"
           />
         )}
         <button className={css.button} onClick={() => setIsModalOpen(true)}>
